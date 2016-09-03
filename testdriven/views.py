@@ -4,7 +4,7 @@ from django.views.generic import ListView
 from blog.models import Entry
 
 
-class HomeView(TemplateView):
+class HomeView(ListView):
 
 	template_name = 'index.html'
 

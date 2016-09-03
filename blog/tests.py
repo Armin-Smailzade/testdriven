@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
-from .models import Entry
+from .models import Entry, Comment
 
 class EntryModelTest(TestCase):
 
@@ -67,3 +67,15 @@ class EntryViewTest(TestCase):
 	def test_body_in_entry(self):
 		response = self.client.get(self.entry.get_absolute_url())
 		self.assertContains(response, self.entry.body)
+
+	def test_comment_in_entry(self):
+		self.comment = Comment.objects.create(entry=self.entry, body="this is a test comment.")
+		response = self.client.get(self.entry.get_absolute_url())
+		self.assertContains(response, self.comment.body)
+
+
+class CommentModelTest(TestCase):
+
+	def test_string_representation(self):
+		comment = Comment(email="armin@gmail.com")
+		self.assertEqual(str(comment), "armin@gmail.com")
