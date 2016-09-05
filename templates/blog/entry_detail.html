@@ -7,6 +7,7 @@
 	<h4>Comments</h4>
 	{% for comment in entry.comment_set.all %}
 	    <p><em>Posted by {{ comment.name }}</em></p>
+	    <img src="{{ comment.gravatar_url }}" align="left">
 	    {{ comment.body|linebreaks }}
 	{% empty %}
 	    No comments yet.

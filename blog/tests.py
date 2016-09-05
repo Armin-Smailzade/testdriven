@@ -5,6 +5,7 @@ from django.template.defaultfilters import slugify
 
 from django_webtest import WebTest
 
+import hashlib
 import datetime
 
 from .forms import CommentForm
@@ -102,7 +103,6 @@ class EntryViewTest(WebTest):
 		today = datetime.date.today()
 		entry = Entry.objects.create(title=title, body="body", author=self.user)
 		slug = slugify(title)
-
 		url = "/{year}/{month}/{day}/{pk}-{slug}/".format(
 			year = today.year,
 			month = today.month,
@@ -110,7 +110,6 @@ class EntryViewTest(WebTest):
 			slug = slug,
 			pk = entry.pk,
 			)
-		print(url)
 		response = self.client.get(url)
 		self.assertEqual(response.status_code, 200)
 		self.assertTemplateUsed(response, template_name = 'blog/entry_detail.html')
@@ -133,6 +132,13 @@ class CommentModelTest(TestCase):
 	def test_string_representation(self):
 		comment = Comment(email="armin@gmail.com")
 		self.assertEqual(str(comment), "armin@gmail.com")
+
+	def test_gravatar_url(self):
+		email = "armin@gmail.com"
+		comment = Comment(body="Comment Body", email=email)
+		md5 = hashlib.md5(email.encode())
+		digest = md5.hexdigest()
+		expected = "http://www.gravatar.com/avatar/{}".format(digest)
 
 class CommentFormTest(TestCase):
 
